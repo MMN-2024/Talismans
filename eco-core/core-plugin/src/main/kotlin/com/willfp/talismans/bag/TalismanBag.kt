@@ -29,8 +29,10 @@ private val Menu.talismanBag by menuStateVar<List<ItemStack>>(
 
 object TalismanBag {
     private val menus = mutableMapOf<Int, Menu>()
-    private lateinit var legacyKey: PersistentDataKey<List<String>>
-    private lateinit var key: PersistentDataKey<List<String>>
+
+    // Initialize legacyKey and key as nullable properties
+    private var legacyKey: PersistentDataKey<List<String>>? = null
+    private var key: PersistentDataKey<List<String>>? = null
     private lateinit var emptyItem: ItemStack
 
     private val savedItems = mutableMapOf<UUID, List<ItemStack>>()
@@ -57,6 +59,7 @@ object TalismanBag {
         }
 
     internal fun update(plugin: EcoPlugin) {
+        // Initialize legacyKey and key only once
         legacyKey = PersistentDataKey(
             plugin.namespacedKeyFactory.create("talisman_bag"),
             PersistentDataKeyType.STRING_LIST,
@@ -69,10 +72,12 @@ object TalismanBag {
             emptyList()
         )
 
+        // Initialize emptyItem
         emptyItem = ItemStackBuilder(Items.lookup(plugin.configYml.getString("bag.blocked-item")))
             .addLoreLines(plugin.configYml.getStrings("bag.blocked-item-lore"))
             .build()
 
+        // Create the menus based on rows
         for (rows in 1..6) {
             menus[rows] = menu(rows) {
                 title = plugin.configYml.getFormattedString("bag.title")
@@ -83,7 +88,6 @@ object TalismanBag {
                     for (column in 1..9) {
                         setSlot(row, column, slot({ player, menu ->
                             val bagSize = player.bagSize
-
                             val index = MenuUtils.rowColumnToSlot(row, column)
 
                             if (index >= bagSize) {
@@ -103,9 +107,15 @@ object TalismanBag {
                 }
 
                 onRender { player, menu ->
+                    // Make sure to initialize talismanBag
                     if (menu.talismanBag[player].isEmpty()) {
-                        menu.talismanBag[player] += player.profile.read(legacyKey).map { Items.lookup(it).item }
-                        menu.talismanBag[player] += player.profile.read(key).mapNotNull { Items.fromSNBT(it) }
+                        // Safely access legacyKey and key
+                        legacyKey?.let { legacy ->
+                            menu.talismanBag[player] += player.profile.read(legacy).map { Items.lookup(it).item }
+                        }
+                        key?.let { k ->
+                            menu.talismanBag[player] += player.profile.read(k).mapNotNull { Items.fromSNBT(it) }
+                        }
                     }
 
                     val items = menu.getCaptiveItems(player)
@@ -116,7 +126,9 @@ object TalismanBag {
 
                     savedItems[player.uniqueId] = toWrite.toList()
 
-                    player.profile.write(key, toWrite.map { Items.toSNBT(it) })
+                    key?.let { k ->
+                        player.profile.write(k, toWrite.map { Items.toSNBT(it) })
+                    }
                 }
 
                 onClose { event, menu ->
@@ -127,8 +139,13 @@ object TalismanBag {
 
                     val toWrite = savedItems[player.uniqueId] ?: emptyList()
 
-                    player.profile.write(key, toWrite.map { Items.toSNBT(it) })
-                    player.profile.write(legacyKey, emptyList())
+                    key?.let { k ->
+                        player.profile.write(k, toWrite.map { Items.toSNBT(it) })
+                    }
+
+                    legacyKey?.let { legacy ->
+                        player.profile.write(legacy, emptyList())
+                    }
 
                     val toDrop = items.filter { TalismanChecks.getTalismanOnItem(it) == null }
 
@@ -141,6 +158,7 @@ object TalismanBag {
             }
         }
 
+        // Register placeholder
         PlaceholderManager.registerPlaceholder(
             PlayerPlaceholder(
                 plugin,
@@ -155,15 +173,20 @@ object TalismanBag {
     }
 
     fun getTalismans(player: Player): List<ItemStack> {
+        // Initialize savedItems only if not already initialized
         if (!savedItems.contains(player.uniqueId)) {
-            val legacyItems = player.profile.read(legacyKey)
-                .map { Items.lookup(it).item }
-                .filterNot { EmptyTestableItem().matches(it) }
-                .filter { TalismanChecks.getTalismanOnItem(it) != null }
+            val legacyItems = legacyKey?.let { legacy ->
+                player.profile.read(legacy)
+                    .map { Items.lookup(it).item }
+                    .filterNot { EmptyTestableItem().matches(it) }
+                    .filter { TalismanChecks.getTalismanOnItem(it) != null }
+            } ?: emptyList()
 
-            val items = player.profile.read(key)
-                .mapNotNull { Items.fromSNBT(it) }
-                .filter { TalismanChecks.getTalismanOnItem(it) != null }
+            val items = key?.let { k ->
+                player.profile.read(k)
+                    .mapNotNull { Items.fromSNBT(it) }
+                    .filter { TalismanChecks.getTalismanOnItem(it) != null }
+            } ?: emptyList()
 
             savedItems[player.uniqueId] = (legacyItems + items).toList()
         }

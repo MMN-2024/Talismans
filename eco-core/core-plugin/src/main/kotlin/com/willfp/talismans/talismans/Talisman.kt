@@ -17,7 +17,6 @@ import com.willfp.libreforge.effects.Effects
 import com.willfp.talismans.TalismansPlugin
 import com.willfp.talismans.talismans.util.TalismanChecks
 import com.willfp.talismans.talismans.util.TalismanUtils
-import org.apache.commons.lang3.Validate
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
@@ -36,7 +35,7 @@ class Talisman(
 
     private val _itemStack: ItemStack = run {
         val item = Items.lookup(config.getString("item"))
-        Validate.isTrue(item !is EmptyTestableItem, "Item specified in $id is invalid!")
+        require(item !is EmptyTestableItem) { "Item specified in $id is invalid!" }
         TalismanUtils.registerTalismanMaterial(item.item.type)
 
         ItemStackBuilder(item.item)
@@ -64,11 +63,11 @@ class Talisman(
         } else null
     }
 
-    val customItem = CustomItem(
-        this.id,
-        { test -> TalismanChecks.getTalismanOnItem(test) == this },
-        itemStack
-    ).apply { register() }
+    //  val customItem = CustomItem(
+    //      this.id,
+    //      { test -> TalismanChecks.getTalismanOnItem(test) == this },
+    //      itemStack
+    //  ).apply { register() }
 
     val lowerLevel: Talisman?
         get() = Talismans.getByID(config.getString("higherLevelOf"))
