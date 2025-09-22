@@ -17,28 +17,9 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
 class TalismanInventoryListener(private val plugin: TalismansPlugin) : Listener {
     
     private fun refreshPlayerEffects(player: Player) {
-        // Clear talisman cache immediately
+        // Clear talisman cache and update effects immediately
         TalismanChecks.clearCache(player)
-        
-        // Schedule a delayed task to force complete refresh
-        Bukkit.getScheduler().runTaskLater(plugin, Runnable {
-            // Clear cache again
-            TalismanChecks.clearCache(player)
-            
-            // Force libreforge to update all effects for this player
-            try {
-                player.toDispatcher().updateEffects()
-            } catch (e: Exception) {
-                // Fallback: try to force refresh by getting talismans
-                TalismanChecks.getTalismansOnPlayer(player)
-                
-                // Additional fallback: try to simulate what happens on reload
-                Bukkit.getScheduler().runTaskLater(plugin, Runnable {
-                    TalismanChecks.clearCache(player)
-                    TalismanChecks.getTalismansOnPlayer(player)
-                }, 2L)
-            }
-        }, 1L)
+        player.toDispatcher().updateEffects()
     }
     
     @EventHandler(priority = EventPriority.MONITOR)
