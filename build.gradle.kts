@@ -35,6 +35,7 @@ allprojects {
 
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://repo.auxilor.io/repository/maven-public/")
+        maven("https://minevolt.net/repo/")
         maven("https://jitpack.io")
     }
 
@@ -42,7 +43,6 @@ allprojects {
         compileOnly("com.willfp:eco:6.73.0")
         compileOnly("org.jetbrains:annotations:23.0.0")
         compileOnly("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
-        implementation("com.willfp:libreforge:${libreforgeVersion}")
         implementation("com.willfp:ecomponent:1.3.0")
     }
 
