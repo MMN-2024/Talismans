@@ -81,7 +81,7 @@ class TalismansPlugin : LibreforgePlugin() {
         return listOf(
             BlockPlaceListener(),
             DiscoverRecipeListener(this),
-            TalismanInventoryListener()
+            TalismanInventoryListener(this)
         )
     }
 
