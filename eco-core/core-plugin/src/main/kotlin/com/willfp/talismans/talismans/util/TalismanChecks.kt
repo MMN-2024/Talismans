@@ -6,6 +6,7 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.config.updating.ConfigUpdater
 import com.willfp.eco.core.fast.fast
 import com.willfp.libreforge.ItemProvidedHolder
+import com.willfp.talismans.bag.TalismanBag
 import com.willfp.talismans.TalismansPlugin.Companion.instance
 import com.willfp.talismans.talismans.Talisman
 import com.willfp.talismans.talismans.Talismans.getByID
@@ -185,6 +186,7 @@ object TalismanChecks {
     fun clearCache(player: Player) {
         CACHED_TALISMAN_ITEMS.invalidate(player)
         CACHED_TALISMANS.invalidate(player)
+        TalismanBag.clearCache(player)
     }
 
     /**
