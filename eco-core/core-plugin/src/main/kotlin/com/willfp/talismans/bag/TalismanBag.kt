@@ -170,8 +170,4 @@ object TalismanBag {
 
         return savedItems[player.uniqueId] ?: emptyList()
     }
-
-    fun clearCache(player: Player) {
-        savedItems.remove(player.uniqueId)
-    }
 }
