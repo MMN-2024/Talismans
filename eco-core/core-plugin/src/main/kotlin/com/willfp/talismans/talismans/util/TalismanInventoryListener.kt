@@ -4,7 +4,6 @@ import com.willfp.libreforge.updateEffects
 import com.willfp.libreforge.toDispatcher
 import com.willfp.talismans.TalismansPlugin
 import org.bukkit.Bukkit
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
