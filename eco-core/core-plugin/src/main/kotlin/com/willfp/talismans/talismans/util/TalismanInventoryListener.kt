@@ -11,9 +11,11 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
+import org.bukkit.event.entity.EntityPickupItemEvent
 
 class TalismanInventoryListener(private val plugin: TalismansPlugin) : Listener {
     
@@ -51,7 +53,18 @@ class TalismanInventoryListener(private val plugin: TalismansPlugin) : Listener 
     }
     
     @EventHandler(priority = EventPriority.MONITOR)
+    fun onEntityPickupItem(event: EntityPickupItemEvent) {
+        val player = event.entity as? Player ?: return
+        refreshPlayerEffects(player)
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR)
     fun onPlayerSwapHandItems(event: PlayerSwapHandItemsEvent) {
+        refreshPlayerEffects(event.player)
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR)
+    fun onPlayerItemBreak(event: PlayerItemBreakEvent) {
         refreshPlayerEffects(event.player)
     }
 }
