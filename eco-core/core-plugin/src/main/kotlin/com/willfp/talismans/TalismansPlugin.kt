@@ -72,10 +72,10 @@ class TalismansPlugin : LibreforgePlugin() {
         TalismanChecks.clearCache(player)
         // Force libreforge to refresh this player's effects
         // This uses the registered refresh function from handleEnable()
-        Bukkit.getScheduler().runTask(this) {
+        Bukkit.getScheduler().runTask(this, Runnable {
             TalismanChecks.clearCache(player)
             TalismanChecks.getTalismansOnPlayer(player)
-        }
+        })
     }
 
     override fun loadConfigCategories(): List<ConfigCategory> {
