@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerPickupItemEvent
@@ -24,6 +25,12 @@ class TalismanInventoryListener(private val plugin: TalismansPlugin) : Listener 
     
     @EventHandler(priority = EventPriority.MONITOR)
     fun onInventoryClick(event: InventoryClickEvent) {
+        val player = event.whoClicked as? Player ?: return
+        refreshPlayerEffects(player)
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR)
+    fun onInventoryDrag(event: InventoryDragEvent) {
         val player = event.whoClicked as? Player ?: return
         refreshPlayerEffects(player)
     }
