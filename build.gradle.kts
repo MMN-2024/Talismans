@@ -35,6 +35,7 @@ allprojects {
 
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://repo.auxilor.io/repository/maven-public/")
+        maven("https://minevolt.net/repo/")
         maven("https://jitpack.io")
     }
 
