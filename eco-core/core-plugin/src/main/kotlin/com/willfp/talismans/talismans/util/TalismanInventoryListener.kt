@@ -1,6 +1,7 @@
 package com.willfp.talismans.talismans.util
 
 import com.willfp.libreforge.updateEffects
+import com.willfp.libreforge.toDispatcher
 import com.willfp.talismans.TalismansPlugin
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -26,7 +27,7 @@ class TalismanInventoryListener(private val plugin: TalismansPlugin) : Listener 
             
             // Force libreforge to update all effects for this player
             try {
-                player.updateEffects()
+                player.toDispatcher().updateEffects()
             } catch (e: Exception) {
                 // Fallback: try to force refresh by getting talismans
                 TalismanChecks.getTalismansOnPlayer(player)
