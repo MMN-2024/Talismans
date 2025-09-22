@@ -2,7 +2,6 @@ package com.willfp.talismans.talismans.util
 
 import com.willfp.talismans.TalismansPlugin
 import com.willfp.libreforge.refreshPlayer
-import com.willfp.libreforge.registerPlayerRefreshFunction
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
