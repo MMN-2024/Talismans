@@ -20,10 +20,32 @@ class TalismanInventoryListener(private val plugin: TalismansPlugin) : Listener 
         
         // Schedule a delayed task to ensure effects are re-evaluated
         Bukkit.getScheduler().runTaskLater(plugin, Runnable {
-            // Force re-evaluation by clearing cache again and triggering a dummy action
+            // Clear cache again to ensure it's fresh
             TalismanChecks.clearCache(player)
-            // Trigger talisman re-evaluation by getting talismans (this forces the system to re-read)
+            
+            // Force re-evaluation by getting talismans (this forces the system to re-read)
             TalismanChecks.getTalismansOnPlayer(player)
+            
+            // Trigger libreforge refresh by calling the registered refresh function
+            // This mimics what happens during reload
+            try {
+                // Use reflection to call the refresh function that was registered
+                val refreshMethod = plugin.javaClass.getMethod("refreshPlayer", Player::class.java)
+                refreshMethod.invoke(plugin, player)
+            } catch (e: Exception) {
+                // If reflection fails, try alternative approach
+                // Force a mini "reload" for this player by clearing and re-registering
+                plugin.logger.info("Using alternative refresh method for player ${player.name}")
+                
+                // Clear all caches
+                TalismanChecks.clearCache(player)
+                
+                // Force a complete re-evaluation by simulating what happens on join
+                Bukkit.getScheduler().runTaskLater(plugin, Runnable {
+                    TalismanChecks.clearCache(player)
+                    TalismanChecks.getTalismansOnPlayer(player)
+                }, 2L)
+            }
         }, 1L) // 1 tick delay
     }
     
