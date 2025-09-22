@@ -23,6 +23,7 @@ import com.willfp.talismans.talismans.Talismans
 import com.willfp.talismans.talismans.util.BlockPlaceListener
 import com.willfp.talismans.talismans.util.DiscoverRecipeListener
 import com.willfp.talismans.talismans.util.TalismanChecks
+import com.willfp.talismans.talismans.util.TalismanInventoryListener
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
@@ -79,7 +80,8 @@ class TalismansPlugin : LibreforgePlugin() {
     override fun loadListeners(): List<Listener> {
         return listOf(
             BlockPlaceListener(),
-            DiscoverRecipeListener(this)
+            DiscoverRecipeListener(this),
+            TalismanInventoryListener()
         )
     }
 
