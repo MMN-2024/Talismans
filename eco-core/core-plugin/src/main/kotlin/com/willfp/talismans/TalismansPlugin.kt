@@ -23,6 +23,7 @@ import com.willfp.talismans.talismans.Talismans
 import com.willfp.talismans.talismans.util.BlockPlaceListener
 import com.willfp.talismans.talismans.util.DiscoverRecipeListener
 import com.willfp.talismans.talismans.util.TalismanChecks
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
@@ -56,6 +57,11 @@ class TalismansPlugin : LibreforgePlugin() {
     override fun handleReload() {
         TalismanBag.update(this)
         TalismanChecks.reload(this)
+        
+        // Clear talisman caches for all online players to ensure effects work immediately after reload
+        Bukkit.getOnlinePlayers().forEach { player ->
+            TalismanChecks.clearCache(player)
+        }
     }
 
     override fun loadConfigCategories(): List<ConfigCategory> {
