@@ -26,7 +26,7 @@ class TalismanInventoryListener(private val plugin: TalismansPlugin) : Listener 
             
             // Force libreforge to update all effects for this player
             try {
-                updateEffects(player)
+                player.updateEffects()
             } catch (e: Exception) {
                 // Fallback: try to force refresh by getting talismans
                 TalismanChecks.getTalismansOnPlayer(player)
